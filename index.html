@@ -411,20 +411,41 @@
             recupererPlatsDepuisGoogleSheets();
         };
 
+        // Permet d'extraire proprement une valeur sans se soucier des majuscules ou espaces dans les titres
+        function extraireValeur(objet, cleAttendue) {
+            if (!objet) return "";
+            const cleFormatee = cleAttendue.toLowerCase().trim();
+            for (let k in objet) {
+                if (k.toLowerCase().trim() === cleFormatee) {
+                    return String(objet[k]).trim();
+                }
+            }
+            return "";
+        }
+
         function recupererPlatsDepuisGoogleSheets() {
             const grille = document.getElementById('grille');
             grille.innerHTML = "<div style='color:var(--accent); padding:20px;'>Mise de table en cours...</div>";
 
             fetch(SHEETDB_API_URL)
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error("HTTP-Error: " + response.status);
-                    }
+                    if (!response.ok) throw new Error("Erreur HTTP: " + response.status);
                     return response.json();
                 })
                 .then(data => {
                     if (data && Array.isArray(data) && data.length > 0 && !data[0].error) {
-                        tousLesPlats = data;
+                        // Normalisation stricte de toutes les données reçues pour le code
+                        tousLesPlats = data.map(item => {
+                            return {
+                                id: extraireValeur(item, 'id'),
+                                pseudo: extraireValeur(item, 'pseudo'),
+                                nomplat: extraireValeur(item, 'nomplat') || extraireValeur(item, 'nom du plat'),
+                                ingredients: extraireValeur(item, 'ingredients') || extraireValeur(item, 'ingrédients'),
+                                preparation: extraireValeur(item, 'preparation') || extraireValeur(item, 'préparation'),
+                                issignature: extraireValeur(item, 'issignature').toLowerCase(),
+                                date: extraireValeur(item, 'date')
+                            };
+                        });
                     } else {
                         tousLesPlats = [];
                     }
@@ -447,8 +468,8 @@
                 return;
             }
 
-            const signatures = tousLesPlats.filter(p => p && p.id && (p.issignature === "true" || p.issignature === true));
-            const visiteurs = tousLesPlats.filter(p => p && p.id && p.issignature !== "true" && p.issignature !== true).reverse();
+            const signatures = tousLesPlats.filter(p => p.id && (p.issignature === "true" || p.pseudo.toLowerCase() === "chef"));
+            const visiteurs = tousLesPlats.filter(p => p.id && p.issignature !== "true" && p.pseudo.toLowerCase() !== "chef").reverse();
 
             signatures.forEach(plat => grille.appendChild(creerCarteHTML(plat, true)));
             visiteurs.forEach(plat => grille.appendChild(creerCarteHTML(plat, false)));
@@ -499,6 +520,7 @@
             const optionHeure = { hour: '2-digit', minute: '2-digit' };
             const dateFormatee = maintenant.toLocaleDateString('fr-FR', optionDate) + " à " + maintenant.toLocaleTimeString('fr-FR', optionHeure);
 
+            // On envoie les titres en minuscules pour forcer la propreté du Sheets
             const nouveauPlat = {
                 id: "plat_" + Date.now(),
                 pseudo: pseudo,
@@ -526,7 +548,7 @@
         }
 
         function initialiserStructureGoogleSheets() {
-            if(!confirm("Attention : l'initialisation va ajouter les propositions de base du chef. Êtes-vous sûr ?")) return;
+            if(!confirm("Attention : l'initialisation va synchroniser la base. Continuer ?")) return;
 
             const baseDonneesInitiale = [
                 { id: "sig_mousse", pseudo: "Chef", nomplat: "Mousse au Chocolat", ingredients: "Chocolat noir, Oeufs", preparation: "Monter les blancs en neige fermes.", issignature: "true", date: "" },
@@ -543,10 +565,7 @@
                 alert("Structure initialisée avec succès !");
                 recupererPlatsDepuisGoogleSheets();
             })
-            .catch(err => {
-                console.error(err);
-                alert("Erreur d'initialisation.");
-            });
+            .catch(err => alert("Erreur d'initialisation."));
         }
 
         function sauvegarderMiseAJourChef() {
@@ -556,17 +575,16 @@
             const preparationModifiee = document.getElementById('chefPreparation').value.trim();
 
             if (!nomPlatModifie || !ingredientsModifies || !preparationModifiee) {
-                alert("Veuillez remplir tous les champs avant de sauvegarder.");
+                alert("Veuillez remplir tous les champs.");
                 return;
             }
 
-            // Étape 1 : Supprimer l'ancienne ligne de Chef (Méthode de nettoyage sécurisée)
+            // Supprime l'ancienne ligne pour éviter les doublons ou conflits de casse
             fetch(`${SHEETDB_API_URL}/id/${idSelectionne}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' }
             })
             .then(() => {
-                // Étape 2 : Recréer la suggestion mise à jour proprement via POST
                 const platChefMisAJour = {
                     id: idSelectionne,
                     pseudo: "Chef",
@@ -587,17 +605,12 @@
             .then(result => {
                 localStorage.removeItem('user_has_liked_' + idSelectionne);
                 localStorage.setItem('like_' + idSelectionne, 0);
-                
-                // Masquer le panneau et recharger les données
                 document.getElementById('comptoirChef').style.display = "none";
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                alert("Suggestion du Chef mise à jour avec succès dans Google Sheets !");
+                alert("Suggestion du Chef mise à jour avec succès !");
                 recupererPlatsDepuisGoogleSheets();
             })
-            .catch(error => {
-                console.error(error);
-                alert("Une erreur est survenue lors de l'enregistrement.");
-            });
+            .catch(error => alert("Une erreur est survenue lors de l'enregistrement."));
         }
 
         function likerPlat(id) {
@@ -630,7 +643,7 @@
         function chargerInfosDansFormulaireChef() {
             const idSelectionne = document.getElementById('selectSignature').value;
             if(!tousLesPlats || tousLesPlats.length === 0) return;
-            const plat = tousLesPlats.find(p => p && p.id === idSelectionne);
+            const plat = tousLesPlats.find(p => p.id === idSelectionne);
             
             if(plat) {
                 document.getElementById('chefNomPlat').value = plat.nomplat || "";
