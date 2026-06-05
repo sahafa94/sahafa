@@ -275,6 +275,16 @@
             position: absolute;
             bottom: 15px;
             right: 20px;
+            left: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .date-publication {
+            font-size: 0.75rem;
+            color: #777;
+            font-style: italic;
         }
 
         .btn-coeur {
@@ -362,7 +372,6 @@
             <div id="comptoirChef" class="comptoir-chef">
                 <h2>🛠️ Tableau de Bord du Chef</h2>
                 
-                <!-- Bouton d'initialisation masqué de manière sécurisée ici -->
                 <button style="background-color: #27ae60; border-color: #219653; margin-bottom: 25px;" onclick="initialiserStructureGoogleSheets()">🔧 Réinitialiser la structure Google Sheets</button>
                 
                 <div class="form-group">
@@ -442,7 +451,7 @@
             const visiteurs = tousLesPlats.filter(p => p && p.id && p.issignature !== "true" && p.issignature !== true).reverse();
 
             signatures.forEach(plat => grille.appendChild(creerCarteHTML(plat, true)));
-            visitors = visiteurs.forEach(plat => grille.appendChild(creerCarteHTML(plat, false)));
+            visiteurs.forEach(plat => grille.appendChild(creerCarteHTML(plat, false)));
         }
 
         function creerCarteHTML(plat, isSignature) {
@@ -456,6 +465,7 @@
             const secureNomPlat = (plat.nomplat || 'Plat sans nom').replace(/</g, "&lt;").replace(/>/g, "&gt;");
             const secureIngredients = (plat.ingredients || '-').replace(/</g, "&lt;").replace(/>/g, "&gt;");
             const securePreparation = (plat.preparation || '-').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            const secureDate = plat.date ? plat.date.replace(/</g, "&lt;").replace(/>/g, "&gt;") : '';
 
             carte.innerHTML = `
                 ${isSignature ? '<span class="badge-chef">Suggestion du Chef</span>' : ''}
@@ -464,6 +474,7 @@
                 <div class="ingredients"><strong>Ingrédients :</strong> ${secureIngredients}</div>
                 <div class="preparation">${securePreparation}</div>
                 <div class="action-bar">
+                    <div class="date-publication">${secureDate}</div>
                     <button class="btn-coeur ${hasLiked ? 'liked' : ''}" onclick="likerPlat('${plat.id}')">
                         ❤️ <span>${likesLocaux}</span>
                     </button>
@@ -483,13 +494,20 @@
                 return;
             }
 
+            // Génération de la date du jour au format local : DD/MM/YYYY à HH:MM
+            const maintenant = new Date();
+            const optionDate = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            const optionHeure = { hour: '2-digit', minute: '2-digit' };
+            const dateFormatee = maintenant.toLocaleDateString('fr-FR', optionDate) + " à " + maintenant.toLocaleTimeString('fr-FR', optionHeure);
+
             const nouveauPlat = {
                 id: "plat_" + Date.now(),
                 pseudo: pseudo,
                 nomplat: nomPlat,
                 ingredients: ingredients,
                 preparation: preparation,
-                issignature: "false"
+                issignature: "false",
+                date: dateFormatee
             };
 
             fetch(SHEETDB_API_URL, {
@@ -512,8 +530,8 @@
             if(!confirm("Attention : l'initialisation va ajouter les propositions de base du chef. Êtes-vous sûr ?")) return;
 
             const baseDonneesInitiale = [
-                { id: "sig_mousse", pseudo: "Chef", nomplat: "Mousse au Chocolat", ingredients: "Chocolat noir, Oeufs", preparation: "Monter les blancs en neige fermes.", issignature: "true" },
-                { id: "sig_zebu", pseudo: "Chef", nomplat: "Filet de Zébu aux Baies Roses", ingredients: "Zébu, Baies roses, Crème", preparation: "Saisir à la poêle et lier la sauce.", issignature: "true" }
+                { id: "sig_mousse", pseudo: "Chef", nomplat: "Mousse au Chocolat", ingredients: "Chocolat noir, Oeufs", preparation: "Monter les blancs en neige fermes.", issignature: "true", date: "" },
+                { id: "sig_zebu", pseudo: "Chef", nomplat: "Filet de Zébu aux Baies Roses", ingredients: "Zébu, Baies roses, Crème", preparation: "Saisir à la poêle et lier la sauce.", issignature: "true", date: "" }
             ];
 
             fetch(SHEETDB_API_URL, {
