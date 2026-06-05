@@ -6,51 +6,59 @@
     <title>Sahafa - Le Van Culinaire Collaboratif</title>
     <link rel="icon" type="image/png" href="favicon.png">
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
+    
     <style>
-        /* CSS : Style Japonais Traditionnel & Vrai Marbre Noir Sombre */
+        /* CSS : Style Japonais Traditionnel & Épuré */
         :root {
             --primary: #8B4513;        /* Brun Palissandre */
             --primary-light: #A0522D;  /* Terre cuite */
-            --accent: #E6C280;         /* Or pâle / Paille pour détacher sur le noir */
-            --text-light: #f7f4eb;     /* Texte clair pour le fond sombre */
-            --text-dark: #1a1108;      /* Texte sombre pour l'intérieur des cartes */
+            --accent: #E6C280;         /* Or pâle / Paille */
+            --text-light: #f7f4eb;     /* Texte clair sur fond sombre */
+            --text-dark: #2c1d11;      /* Texte sombre pour l'intérieur des cartes */
+            --bg-card: rgba(255, 255, 255, 0.97);
+            --radius: 8px;             /* Arrondi moderne et élégant */
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.65)), 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
                               url('https://images.unsplash.com/photo-1618220179428-22790b461013?q=80&w=1200&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             color: var(--text-light);
             margin: 0;
-            padding: 12px;
+            padding: 16px;
+            -webkit-font-smoothing: antialiased;
         }
 
         @media (min-width: 480px) {
-            body { padding: 20px; }
+            body { padding: 30px 20px; }
         }
 
         header {
             text-align: center;
-            padding: 30px 10px;
+            padding: 40px 10px;
             max-width: 800px;
             margin: 0 auto;
         }
 
         @media (min-width: 768px) {
-            header { padding: 50px 20px; }
+            header { padding: 60px 20px 40px 20px; }
         }
 
         .logo-container {
             display: inline-block;
             position: relative;
-            margin-bottom: 15px;
-            padding: 10px 20px;
+            margin-bottom: 20px;
+            padding: 12px 30px;
         }
         @media (min-width: 480px) {
-            .logo-container { padding: 10px 40px; }
+            .logo-container { padding: 12px 50px; }
         }
 
         .logo-container::before, .logo-container::after {
@@ -65,140 +73,154 @@
         .logo-container::after { bottom: 0; }
 
         header h1 {
-            font-size: 2.2rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.4rem;
             margin: 0;
             color: #ffffff;
-            letter-spacing: 6px;
-            font-weight: 300;
+            letter-spacing: 8px;
+            font-weight: 500;
             text-transform: uppercase;
             position: relative;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         @media (min-width: 480px) {
-            header h1 { font-size: 3rem; letter-spacing: 10px; }
+            header h1 { font-size: 3.4rem; letter-spacing: 12px; }
         }
         @media (min-width: 768px) {
-            header h1 { font-size: 4rem; letter-spacing: 12px; }
+            header h1 { font-size: 4.2rem; letter-spacing: 16px; }
         }
 
         .logo-dot {
             position: absolute;
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             background-color: #bc1a1a;
             border-radius: 50%;
             z-index: -1;
-            transform: translateX(-3px);
-            box-shadow: 0 0 15px rgba(188, 26, 26, 0.4);
+            transform: translateX(-2px);
+            box-shadow: 0 0 20px rgba(188, 26, 26, 0.6);
         }
         @media (min-width: 480px) {
-            .logo-dot { width: 45px; height: 45px; transform: translateX(-6px); }
+            .logo-dot { width: 50px; height: 50px; transform: translateX(-4px); }
         }
 
         header p {
-            font-family: 'Georgia', serif;
+            font-family: 'Playfair Display', serif;
             font-style: italic;
-            font-size: 1rem;
-            letter-spacing: 1px;
-            opacity: 0.85;
+            font-size: 1.1rem;
+            letter-spacing: 1.5px;
             color: var(--accent);
             margin-top: 15px;
-            text-shadow: 1px 2px 5px rgba(0, 0, 0, 0.9);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
         }
 
         .main-container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: 1fr;
-            gap: 25px;
+            gap: 30px;
         }
 
         @media (min-width: 768px) {
             .main-container {
-                grid-template-columns: 320px 1fr;
+                grid-template-columns: 340px 1fr;
                 gap: 40px;
             }
         }
 
         .comptoir {
-            background: rgba(255, 255, 255, 0.96); 
+            background: var(--bg-card);
             color: var(--text-dark);
-            padding: 20px;
-            border-radius: 2px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
             border-top: 5px solid var(--primary); 
             height: fit-content;
         }
 
         .comptoir h2 {
+            font-family: 'Playfair Display', serif;
             margin-top: 0;
             color: var(--primary);
-            font-size: 1.3rem;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 10px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            font-size: 1.4rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding-bottom: 12px;
+            letter-spacing: 0.5px;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         label {
             display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
-            color: #333;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            color: #4a3319;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         input, textarea, select {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #bbb;
-            border-radius: 4px;
+            padding: 12px 14px;
+            border: 1px solid #ccd0d4;
+            border-radius: 6px;
             background-color: #fff;
             box-sizing: border-box;
-            font-size: 16px;
+            font-size: 15px;
             color: var(--text-dark);
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(160, 82, 45, 0.15);
         }
 
         textarea {
             resize: vertical;
-            height: 100px;
+            height: 110px;
         }
 
         button {
             width: 100%;
             background-color: #222;
             color: white;
-            border: 1px solid #444;
+            border: 1px solid #222;
             padding: 14px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 4px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 6px;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
+            transition: var(--transition);
         }
 
         button:hover, button:active {
             background-color: var(--primary);
             border-color: var(--primary);
+            transform: translateY(-1px);
+            box-shadow: 0 5px 12px rgba(139, 69, 19, 0.2);
         }
 
         .table-commune h2 {
+            font-family: 'Playfair Display', serif;
             color: var(--accent);
-            font-size: 1.4rem;
-            margin-top: 10px;
-            text-shadow: 2px 3px 8px rgba(0,0,0,0.8);
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            font-size: 1.6rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            letter-spacing: 0.5px;
         }
 
         .grille-plats {
@@ -216,68 +238,79 @@
 
         .carte-plat {
             position: relative;
-            background: rgba(255, 255, 255, 0.94);
+            background: var(--bg-card);
             color: var(--text-dark);
-            padding: 18px;
-            padding-bottom: 55px;
-            border-radius: 2px;
-            border-left: 5px solid #666;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+            padding: 22px;
+            padding-bottom: 60px;
+            border-radius: var(--radius);
+            border-left: 5px solid #78828a;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+        }
+
+        .carte-plat:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
         }
 
         .carte-plat.signature {
             border-left-color: var(--primary);
-            background-color: #fffbf5;
+            background-color: #fffcf7;
+            box-shadow: 0 10px 25px rgba(139, 69, 19, 0.15), 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
         .badge-chef {
             background: var(--primary);
             color: white;
             font-size: 10px;
-            padding: 3px 8px;
-            border-radius: 1px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 4px;
             text-transform: uppercase;
             display: inline-block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             letter-spacing: 1px;
         }
 
         .carte-plat h3 {
-            margin: 0 0 5px 0;
-            color: #2c1d11;
-            font-size: 1.15rem;
+            font-family: 'Playfair Display', serif;
+            margin: 0 0 6px 0;
+            color: #1a1108;
+            font-size: 1.3rem;
+            line-height: 1.3;
         }
 
         .auteur {
             font-size: 0.85rem;
             color: var(--primary-light);
-            font-weight: bold;
-            margin-bottom: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
         }
 
         .ingredients {
             font-size: 0.9rem;
-            background: #f5f0e6;
-            padding: 8px 12px;
-            border-radius: 2px;
-            margin-bottom: 12px;
-            border: 1px dashed var(--primary-light);
+            background: #f7f3eb;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-bottom: 14px;
+            border: 1px dashed rgba(160, 82, 45, 0.3);
             color: #4a3319;
             word-break: break-word;
+            line-height: 1.4;
         }
 
         .preparation {
-            font-size: 0.9rem;
-            line-height: 1.5;
-            color: #333;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            color: #444;
             word-break: break-word;
         }
 
         .action-bar {
             position: absolute;
-            bottom: 15px;
-            right: 20px;
-            left: 20px;
+            bottom: 18px;
+            right: 22px;
+            left: 22px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -291,47 +324,76 @@
 
         .btn-coeur {
             background: rgba(0, 0, 0, 0.04);
-            border: 1px solid #ddd;
-            color: #666;
-            font-size: 0.9rem;
+            border: 1px solid rgba(0,0,0,0.08);
+            color: #555;
+            font-size: 0.85rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 6px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: bold;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-coeur:hover {
+            background: rgba(188, 26, 26, 0.1);
+            color: #bc1a1a;
+            border-color: rgba(188, 26, 26, 0.2);
+            transform: scale(1.05);
         }
 
         .btn-coeur.liked {
-            background: #b11e1e;
-            border-color: #b11e1e;
+            background: #bc1a1a;
+            border-color: #bc1a1a;
+            color: white;
+        }
+        
+        .btn-coeur.liked:hover {
+            background: #a01414;
             color: white;
         }
 
         footer {
             text-align: center;
-            margin-top: 40px;
+            margin-top: 50px;
             padding: 20px;
         }
 
         .btn-admin-trigger {
             background: transparent;
             border: none;
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8rem;
             cursor: pointer;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+        }
+        
+        .btn-admin-trigger:hover {
+            color: var(--accent);
         }
 
         .comptoir-chef {
             display: none;
             background: #1e140a;
             color: var(--text-light);
-            border: 2px solid var(--accent);
+            border: 1px solid var(--accent);
             margin-top: 30px;
-            padding: 18px;
-            border-radius: 4px;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+        
+        .comptoir-chef h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent);
+        }
+        
+        .comptoir-chef label {
+            color: var(--accent);
         }
     </style>
 </head>
@@ -349,19 +411,19 @@
         <section class="comptoir">
             <h2>Partager une idée</h2>
             <div class="form-group">
-                <label for="pseudo">Votre Prénom / Pseudo :</label>
+                <label for="pseudo">Votre Prénom / Pseudo</label>
                 <input type="text" id="pseudo" placeholder="Ex: Rova">
             </div>
             <div class="form-group">
-                <label for="nomPlat">Nom du plat :</label>
+                <label for="nomPlat">Nom du plat</label>
                 <input type="text" id="nomPlat" placeholder="Ex: Sambos revisités au canard">
             </div>
             <div class="form-group">
-                <label for="ingredients">Ingrédients clés :</label>
+                <label for="ingredients">Ingrédients clés</label>
                 <input type="text" id="ingredients" placeholder="Ex: Pâte à sambos, confit de canard, gingembre">
             </div>
             <div class="form-group">
-                <label for="preparation">Votre secret de préparation :</label>
+                <label for="preparation">Votre secret de préparation</label>
                 <textarea id="preparation" placeholder="Expliquez brièvement votre tour de main ou l'association..."></textarea>
             </div>
             <button onclick="ajouterPlat()">Déposer sur le Sahafa</button>
@@ -374,7 +436,7 @@
             <div id="comptoirChef" class="comptoir-chef">
                 <h2>🛠️ Tableau de Bord du Chef</h2>
                 
-                <button style="background-color: #27ae60; border-color: #219653; margin-bottom: 25px;" onclick="initialiserStructureGoogleSheets()">🔧 Réinitialiser la structure Google Sheets</button>
+                <button style="background-color: #27ae60; border-color: #27ae60; margin-bottom: 25px;" onclick="initialiserStructureGoogleSheets()">🔧 Réinitialiser la structure Google Sheets</button>
                 
                 <div class="form-group">
                     <label for="selectSignature">Choisir l'emplacement à modifier :</label>
@@ -413,7 +475,6 @@
             recupererPlatsDepuisGoogleSheets();
         };
 
-        // Permet d'extraire proprement une valeur sans se soucier des majuscules ou espaces dans les titres
         function extraireValeur(objet, cleAttendue) {
             if (!objet) return "";
             const cleFormatee = cleAttendue.toLowerCase().trim();
@@ -427,7 +488,7 @@
 
         function recupererPlatsDepuisGoogleSheets() {
             const grille = document.getElementById('grille');
-            grille.innerHTML = "<div style='color:var(--accent); padding:20px;'>Mise de table en cours...</div>";
+            grille.innerHTML = "<div style='color:var(--accent); padding:20px; font-style:italic;'>Mise de table en cours...</div>";
 
             fetch(SHEETDB_API_URL)
                 .then(response => {
@@ -436,7 +497,6 @@
                 })
                 .then(data => {
                     if (data && Array.isArray(data) && data.length > 0 && !data[0].error) {
-                        // FILTRE : On ignore complètement les lignes vides renvoyées par SheetDB
                         const donneesValides = data.filter(item => item && (extraireValeur(item, 'id') || extraireValeur(item, 'nomplat')));
 
                         tousLesPlats = donneesValides.map(item => {
@@ -468,7 +528,7 @@
             grille.innerHTML = ""; 
 
             if(tousLesPlats.length === 0) {
-                grille.innerHTML = "<div style='color:var(--accent); opacity:0.8; padding:35px; border: 1px dashed var(--accent); text-align:center; font-style: italic;'>La table attend vos créations !<br><br>Soyez le premier à partager une idée culinaire.</div>";
+                grille.innerHTML = "<div style='color:var(--accent); opacity:0.8; padding:35px; border: 1px dashed var(--accent); text-align:center; font-style: italic; border-radius:var(--radius);'>La table attend vos créations !<br><br>Soyez le premier à partager une idée culinaire.</div>";
                 return;
             }
 
@@ -591,17 +651,13 @@
                 date: ""
             };
 
-            // On utilise PUT sur l'ID directement, ce qui met à jour la ligne sans faire de DELETE
             fetch(`${SHEETDB_API_URL}/id/${idSelectionne}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ data: platChefMisAJour })
             })
             .then(response => {
-                if (!response.ok) {
-                    // Si le PUT est aussi bloqué par ton plan SheetDB, on utilise l'alternative POST de secours
-                    throw new Error("PUT non supporté, bascule sur le plan B");
-                }
+                if (!response.ok) throw new Error("PUT non supporté, bascule sur le plan B");
                 return response.json();
             })
             .then(result => {
@@ -609,8 +665,6 @@
             })
             .catch(error => {
                 console.log("Tentative de mise à jour via ajout direct (Plan B)...");
-                // PLAN B : Si SheetDB bloque les modifications, on ajoute la nouvelle version avec le même ID
-                // La fonction d'affichage ne prendra que la première qu'elle trouve ou gérera le doublon
                 platChefMisAJour.id = idSelectionne;
                 
                 fetch(SHEETDB_API_URL, {
@@ -626,7 +680,6 @@
             });
         }
 
-        // Fonction d'aide pour éviter de répéter le code de succès
         function actionsSuccesChef(idSelectionne) {
             localStorage.removeItem('user_has_liked_' + idSelectionne);
             localStorage.setItem('like_' + idSelectionne, 0);
@@ -635,6 +688,7 @@
             alert("Suggestion du Chef mise à jour avec succès !");
             recupererPlatsDepuisGoogleSheets();
         }
+
         function likerPlat(id) {
             let nbLikes = parseInt(localStorage.getItem('like_' + id)) || 0;
             const hasLikedKey = 'user_has_liked_' + id;
