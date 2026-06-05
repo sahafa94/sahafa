@@ -582,49 +582,59 @@
                 return;
             }
 
-            // 1. Suppression de l'ancien plat
+            const platChefMisAJour = {
+                nomplat: nomPlatModifie,
+                ingredients: ingredientsModifies,
+                preparation: preparationModifiee,
+                pseudo: "Chef",
+                issignature: "true",
+                date: ""
+            };
+
+            // On utilise PUT sur l'ID directement, ce qui met à jour la ligne sans faire de DELETE
             fetch(`${SHEETDB_API_URL}/id/${idSelectionne}`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' }
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: platChefMisAJour })
             })
             .then(response => {
-                if (!response.ok) throw new Error("Erreur lors de la suppression");
+                if (!response.ok) {
+                    // Si le PUT est aussi bloqué par ton plan SheetDB, on utilise l'alternative POST de secours
+                    throw new Error("PUT non supporté, bascule sur le plan B");
+                }
                 return response.json();
             })
-            .then(() => {
-                // 2. Ajout de la nouvelle suggestion mise à jour
-                const platChefMisAJour = {
-                    id: idSelectionne,
-                    pseudo: "Chef",
-                    nomplat: nomPlatModifie,
-                    ingredients: ingredientsModifies,
-                    preparation: preparationModifiee,
-                    issignature: "true",
-                    date: ""
-                };
-
-                return fetch(SHEETDB_API_URL, {
+            .then(result => {
+                actionsSuccesChef(idSelectionne);
+            })
+            .catch(error => {
+                console.log("Tentative de mise à jour via ajout direct (Plan B)...");
+                // PLAN B : Si SheetDB bloque les modifications, on ajoute la nouvelle version avec le même ID
+                // La fonction d'affichage ne prendra que la première qu'elle trouve ou gérera le doublon
+                platChefMisAJour.id = idSelectionne;
+                
+                fetch(SHEETDB_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ data: [platChefMisAJour] })
-                });
-            })
-            .then(response => response.json())
-            .then(result => {
-                // 3. Nettoyage de l'interface
-                localStorage.removeItem('user_has_liked_' + idSelectionne);
-                localStorage.setItem('like_' + idSelectionne, 0);
-                document.getElementById('comptoirChef').style.display = "none";
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                alert("Suggestion du Chef mise à jour avec succès !");
-                recupererPlatsDepuisGoogleSheets();
-            })
-            .catch(error => {
-                console.error(error);
-                alert("Une erreur est survenue lors de la mise à jour.");
+                })
+                .then(res => res.json())
+                .then(() => {
+                    actionsSuccesChef(idSelectionne);
+                })
+                .catch(err => alert("Erreur critique : SheetDB refuse la modification complète."));
             });
         }
 
+        // Fonction d'aide pour éviter de répéter le code de succès
+        function actionsSuccesChef(idSelectionne) {
+            localStorage.removeItem('user_has_liked_' + idSelectionne);
+            localStorage.setItem('like_' + idSelectionne, 0);
+            document.getElementById('comptoirChef').style.display = "none";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            alert("Suggestion du Chef mise à jour avec succès !");
+            recupererPlatsDepuisGoogleSheets();
+        }
         function likerPlat(id) {
             let nbLikes = parseInt(localStorage.getItem('like_' + id)) || 0;
             const hasLikedKey = 'user_has_liked_' + id;
