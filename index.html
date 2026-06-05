@@ -582,6 +582,49 @@
                 return;
             }
 
+            // 1. On lance d'abord la suppression de l'ancien plat
+            fetch(`${SHEETDB_API_URL}/id/${idSelectionne}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("Erreur lors de la suppression");
+                return response.json();
+            })
+            .then(() => {
+                // 2. IMPORTANT : On n'envoie le nouveau plat QUE lorsque le DELETE est confirmé
+                const platChefMisAJour = {
+                    id: idSelectionne,
+                    pseudo: "Chef",
+                    nomplat: nomPlatModifie,
+                    ingredients: ingredientsModifies,
+                    preparation: preparationModifiee,
+                    issignature: "true",
+                    date: ""
+                };
+
+                return fetch(SHEETDB_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ data: [platChefMisAJour] })
+                });
+            })
+            .then(response => response.json())
+            .then(result => {
+                // 3. Nettoyage et mise à jour de l'affichage
+                localStorage.removeItem('user_has_liked_' + idSelectionne);
+                localStorage.setItem('like_' + idSelectionne, 0);
+                document.getElementById('comptoirChef').style.display = "none";
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                alert("Suggestion du Chef mise à jour avec succès !");
+                recupererPlatsDepuisGoogleSheets();
+            })
+            .catch(error => {
+                console.error(error);
+                alert("Une erreur est survenue lors de la mise à jour.");
+            });
+        }
+
             // Supprime l'ancienne ligne pour éviter les doublons ou conflits de casse
             fetch(`${SHEETDB_API_URL}/id/${idSelectionne}`, {
                 method: 'DELETE',
