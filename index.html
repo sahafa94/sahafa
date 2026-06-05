@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sahafa - Le Van Culinaire Collaboratif</title>
-    <!-- Tu le mets exactement ici : -->
     <link rel="icon" type="image/png" href="favicon.png">
     
     <style>
@@ -437,11 +436,13 @@
                 })
                 .then(data => {
                     if (data && Array.isArray(data) && data.length > 0 && !data[0].error) {
-                        // Normalisation stricte de toutes les données reçues pour le code
-                        tousLesPlats = data.map(item => {
+                        // FILTRE : On ignore complètement les lignes vides renvoyées par SheetDB
+                        const donneesValides = data.filter(item => item && (extraireValeur(item, 'id') || extraireValeur(item, 'nomplat')));
+
+                        tousLesPlats = donneesValides.map(item => {
                             return {
                                 id: extraireValeur(item, 'id'),
-                                pseudo: extraireValeur(item, 'pseudo'),
+                                pseudo: extraireValeur(item, 'pseudo') || "Anonyme",
                                 nomplat: extraireValeur(item, 'nomplat') || extraireValeur(item, 'nom du plat'),
                                 ingredients: extraireValeur(item, 'ingredients') || extraireValeur(item, 'ingrédients'),
                                 preparation: extraireValeur(item, 'preparation') || extraireValeur(item, 'préparation'),
@@ -523,7 +524,6 @@
             const optionHeure = { hour: '2-digit', minute: '2-digit' };
             const dateFormatee = maintenant.toLocaleDateString('fr-FR', optionDate) + " à " + maintenant.toLocaleTimeString('fr-FR', optionHeure);
 
-            // On envoie les titres en minuscules pour forcer la propreté du Sheets
             const nouveauPlat = {
                 id: "plat_" + Date.now(),
                 pseudo: pseudo,
@@ -582,7 +582,7 @@
                 return;
             }
 
-            // 1. On lance d'abord la suppression de l'ancien plat
+            // 1. Suppression de l'ancien plat
             fetch(`${SHEETDB_API_URL}/id/${idSelectionne}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' }
@@ -592,7 +592,7 @@
                 return response.json();
             })
             .then(() => {
-                // 2. IMPORTANT : On n'envoie le nouveau plat QUE lorsque le DELETE est confirmé
+                // 2. Ajout de la nouvelle suggestion mise à jour
                 const platChefMisAJour = {
                     id: idSelectionne,
                     pseudo: "Chef",
@@ -611,7 +611,7 @@
             })
             .then(response => response.json())
             .then(result => {
-                // 3. Nettoyage et mise à jour de l'affichage
+                // 3. Nettoyage de l'interface
                 localStorage.removeItem('user_has_liked_' + idSelectionne);
                 localStorage.setItem('like_' + idSelectionne, 0);
                 document.getElementById('comptoirChef').style.display = "none";
@@ -623,40 +623,6 @@
                 console.error(error);
                 alert("Une erreur est survenue lors de la mise à jour.");
             });
-        }
-
-            // Supprime l'ancienne ligne pour éviter les doublons ou conflits de casse
-            fetch(`${SHEETDB_API_URL}/id/${idSelectionne}`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' }
-            })
-            .then(() => {
-                const platChefMisAJour = {
-                    id: idSelectionne,
-                    pseudo: "Chef",
-                    nomplat: nomPlatModifie,
-                    ingredients: ingredientsModifies,
-                    preparation: preparationModifiee,
-                    issignature: "true",
-                    date: ""
-                };
-
-                return fetch(SHEETDB_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ data: [platChefMisAJour] })
-                });
-            })
-            .then(response => response.json())
-            .then(result => {
-                localStorage.removeItem('user_has_liked_' + idSelectionne);
-                localStorage.setItem('like_' + idSelectionne, 0);
-                document.getElementById('comptoirChef').style.display = "none";
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                alert("Suggestion du Chef mise à jour avec succès !");
-                recupererPlatsDepuisGoogleSheets();
-            })
-            .catch(error => alert("Une erreur est survenue lors de l'enregistrement."));
         }
 
         function likerPlat(id) {
