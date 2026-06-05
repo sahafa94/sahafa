@@ -335,8 +335,6 @@
     <div class="main-container">
         
         <section class="comptoir">
-            <button style="background-color: #27ae60; border-color: #219653; margin-bottom: 20px;" onclick="initialiserStructureGoogleSheets()">🔧 Initialiser la Table</button>
-            
             <h2>Partager une idée</h2>
             <div class="form-group">
                 <label for="pseudo">Votre Prénom / Pseudo :</label>
@@ -363,6 +361,10 @@
 
             <div id="comptoirChef" class="comptoir-chef">
                 <h2>🛠️ Tableau de Bord du Chef</h2>
+                
+                <!-- Bouton d'initialisation masqué de manière sécurisée ici -->
+                <button style="background-color: #27ae60; border-color: #219653; margin-bottom: 25px;" onclick="initialiserStructureGoogleSheets()">🔧 Réinitialiser la structure Google Sheets</button>
+                
                 <div class="form-group">
                     <label for="selectSignature">Choisir l'emplacement à modifier :</label>
                     <select id="selectSignature" onchange="chargerInfosDansFormulaireChef()">
@@ -432,7 +434,7 @@
             grille.innerHTML = ""; 
 
             if(tousLesPlats.length === 0) {
-                grille.innerHTML = "<div style='color:var(--accent); opacity:0.8; padding:20px; border: 1px dashed var(--accent); text-align:center;'>La table attend vos créations !<br><br>Videz votre feuille Google Sheets, puis cliquez sur le bouton vert <strong>'Initialiser la Table'</strong> en haut à gauche pour débloquer automatiquement le système.</div>";
+                grille.innerHTML = "<div style='color:var(--accent); opacity:0.8; padding:35px; border: 1px dashed var(--accent); text-align:center; font-style: italic;'>La table attend vos créations !<br><br>Soyez le premier à partager une idée culinaire.</div>";
                 return;
             }
 
@@ -440,7 +442,7 @@
             const visiteurs = tousLesPlats.filter(p => p && p.id && p.issignature !== "true" && p.issignature !== true).reverse();
 
             signatures.forEach(plat => grille.appendChild(creerCarteHTML(plat, true)));
-            visiteurs.forEach(plat => grille.appendChild(creerCarteHTML(plat, false)));
+            visitors = visiteurs.forEach(plat => grille.appendChild(creerCarteHTML(plat, false)));
         }
 
         function creerCarteHTML(plat, isSignature) {
@@ -503,11 +505,11 @@
                 document.getElementById('ingredients').value = "";
                 document.getElementById('preparation').value = "";
             })
-            .catch(error => alert("Erreur d'envoi. Veuillez cliquer sur 'Initialiser la Table' d'abord."));
+            .catch(error => alert("Erreur d'envoi. Veuillez vérifier votre connexion."));
         }
 
         function initialiserStructureGoogleSheets() {
-            if(!confirm("Assurez-vous que votre feuille Google Sheets est bien vide avant de continuer. Lancer l'initialisation ?")) return;
+            if(!confirm("Attention : l'initialisation va ajouter les propositions de base du chef. Êtes-vous sûr ?")) return;
 
             const baseDonneesInitiale = [
                 { id: "sig_mousse", pseudo: "Chef", nomplat: "Mousse au Chocolat", ingredients: "Chocolat noir, Oeufs", preparation: "Monter les blancs en neige fermes.", issignature: "true" },
@@ -521,12 +523,12 @@
             })
             .then(res => res.json())
             .then(result => {
-                alert("Félicitations ! Vos colonnes Google Sheets ont été structurées automatiquement. La table va s'actualiser.");
+                alert("Structure initialisée avec succès !");
                 recupererPlatsDepuisGoogleSheets();
             })
             .catch(err => {
                 console.error(err);
-                alert("Erreur. Vérifiez les permissions de votre clé sur SheetDB.io (méthode POST autorisée).");
+                alert("Erreur d'initialisation.");
             });
         }
 
@@ -559,7 +561,6 @@
             .catch(error => alert("Erreur lors de la mise à jour."));
         }
 
-        // Le reste des fonctions (likes, espace chef) demeure intact
         function likerPlat(id) {
             let nbLikes = parseInt(localStorage.getItem('like_' + id)) || 0;
             const hasLikedKey = 'user_has_liked_' + id;
