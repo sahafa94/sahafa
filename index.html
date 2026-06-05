@@ -494,7 +494,6 @@
                 return;
             }
 
-            // Génération de la date du jour au format local : DD/MM/YYYY à HH:MM
             const maintenant = new Date();
             const optionDate = { day: '2-digit', month: '2-digit', year: 'numeric' };
             const optionHeure = { hour: '2-digit', minute: '2-digit' };
@@ -556,27 +555,49 @@
             const ingredientsModifies = document.getElementById('chefIngredients').value.trim();
             const preparationModifiee = document.getElementById('chefPreparation').value.trim();
 
+            if (!nomPlatModifie || !ingredientsModifies || !preparationModifiee) {
+                alert("Veuillez remplir tous les champs avant de sauvegarder.");
+                return;
+            }
+
+            // Étape 1 : Supprimer l'ancienne ligne de Chef (Méthode de nettoyage sécurisée)
             fetch(`${SHEETDB_API_URL}/id/${idSelectionne}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    data: {
-                        nomplat: nomPlatModifie,
-                        ingredients: ingredientsModifies,
-                        preparation: preparationModifiee
-                    }
-                })
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(() => {
+                // Étape 2 : Recréer la suggestion mise à jour proprement via POST
+                const platChefMisAJour = {
+                    id: idSelectionne,
+                    pseudo: "Chef",
+                    nomplat: nomPlatModifie,
+                    ingredients: ingredientsModifies,
+                    preparation: preparationModifiee,
+                    issignature: "true",
+                    date: ""
+                };
+
+                return fetch(SHEETDB_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ data: [platChefMisAJour] })
+                });
             })
             .then(response => response.json())
             .then(result => {
                 localStorage.removeItem('user_has_liked_' + idSelectionne);
                 localStorage.setItem('like_' + idSelectionne, 0);
-                recupererPlatsDepuisGoogleSheets();
+                
+                // Masquer le panneau et recharger les données
                 document.getElementById('comptoirChef').style.display = "none";
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                alert("Mis à jour avec succès !");
+                alert("Suggestion du Chef mise à jour avec succès dans Google Sheets !");
+                recupererPlatsDepuisGoogleSheets();
             })
-            .catch(error => alert("Erreur lors de la mise à jour."));
+            .catch(error => {
+                console.error(error);
+                alert("Une erreur est survenue lors de l'enregistrement.");
+            });
         }
 
         function likerPlat(id) {
@@ -615,6 +636,10 @@
                 document.getElementById('chefNomPlat').value = plat.nomplat || "";
                 document.getElementById('chefIngredients').value = plat.ingredients || "";
                 document.getElementById('chefPreparation').value = plat.preparation || "";
+            } else {
+                document.getElementById('chefNomPlat').value = "";
+                document.getElementById('chefIngredients').value = "";
+                document.getElementById('chefPreparation').value = "";
             }
         }
     </script>
