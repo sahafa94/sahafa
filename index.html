@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahafa - Le Van Culinaire Collaboratif</title>
+    <style>
+        /* CSS : Style Japonais Traditionnel & Vrai Marbre Noir Sombre */
+        :root {
+            --primary: #8B4513;        /* Brun Palissandre */
+            --primary-light: #A0522D;  /* Terre cuite */
+            --accent: #E6C280;         /* Or pâle / Paille pour détacher sur le noir */
+            --text-light: #f7f4eb;     /* Texte clair pour le fond sombre */
+            --text-dark: #1a1108;      /* Texte sombre pour l'intérieur des cartes */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.65)), 
+                              url('https://images.unsplash.com/photo-1618220179428-22790b461013?q=80&w=1200&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-light);
+            margin: 0;
+            padding: 12px;
+        }
+
+        @media (min-width: 480px) {
+            body { padding: 20px; }
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 10px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            header { padding: 50px 20px; }
+        }
+
+        .logo-container {
+            display: inline-block;
+            position: relative;
+            margin-bottom: 15px;
+            padding: 10px 20px;
+        }
+        @media (min-width: 480px) {
+            .logo-container { padding: 10px 40px; }
+        }
+
+        .logo-container::before, .logo-container::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent) 50%, transparent);
+        }
+        .logo-container::before { top: 0; }
+        .logo-container::after { bottom: 0; }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin: 0;
+            color: #ffffff;
+            letter-spacing: 6px;
+            font-weight: 300;
+            text-transform: uppercase;
+            position: relative;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (min-width: 480px) {
+            header h1 { font-size: 3rem; letter-spacing: 10px; }
+        }
+        @media (min-width: 768px) {
+            header h1 { font-size: 4rem; letter-spacing: 12px; }
+        }
+
+        .logo-dot {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: #bc1a1a;
+            border-radius: 50%;
+            z-index: -1;
+            transform: translateX(-3px);
+            box-shadow: 0 0 15px rgba(188, 26, 26, 0.4);
+        }
+        @media (min-width: 480px) {
+            .logo-dot { width: 45px; height: 45px; transform: translateX(-6px); }
+        }
+
+        header p {
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            opacity: 0.85;
+            color: var(--accent);
+            margin-top: 15px;
+            text-shadow: 1px 2px 5px rgba(0, 0, 0, 0.9);
+        }
+
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        @media (min-width: 768px) {
+            .main-container {
+                grid-template-columns: 320px 1fr;
+                gap: 40px;
+            }
+        }
+
+        .comptoir {
+            background: rgba(255, 255, 255, 0.96); 
+            color: var(--text-dark);
+            padding: 20px;
+            border-radius: 2px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            border-top: 5px solid var(--primary); 
+            height: fit-content;
+        }
+
+        .comptoir h2 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.3rem;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bbb;
+            border-radius: 4px;
+            background-color: #fff;
+            box-sizing: border-box;
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
+        button {
+            width: 100%;
+            background-color: #222;
+            color: white;
+            border: 1px solid #444;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover, button:active {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .table-commune h2 {
+            color: var(--accent);
+            font-size: 1.4rem;
+            margin-top: 10px;
+            text-shadow: 2px 3px 8px rgba(0,0,0,0.8);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .grille-plats {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 640px) {
+            .grille-plats {
+                grid-template-columns: 1fr 1fr;
+                gap: 25px;
+            }
+        }
+
+        .carte-plat {
+            position: relative;
+            background: rgba(255, 255, 255, 0.94);
+            color: var(--text-dark);
+            padding: 18px;
+            padding-bottom: 55px;
+            border-radius: 2px;
+            border-left: 5px solid #666;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .carte-plat.signature {
+            border-left-color: var(--primary);
+            background-color: #fffbf5;
+        }
+
+        .badge-chef {
+            background: var(--primary);
+            color: white;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 1px;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .carte-plat h3 {
+            margin: 0 0 5px 0;
+            color: #2c1d11;
+            font-size: 1.15rem;
+        }
+
+        .auteur {
+            font-size: 0.85rem;
+            color: var(--primary-light);
+            font-weight: bold;
+            margin-bottom: 14px;
+        }
+
+        .ingredients {
+            font-size: 0.9rem;
+            background: #f5f0e6;
+            padding: 8px 12px;
+            border-radius: 2px;
+            margin-bottom: 12px;
+            border: 1px dashed var(--primary-light);
+            color: #4a3319;
+            word-break: break-word;
+        }
+
+        .preparation {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #333;
+            word-break: break-word;
+        }
+
+        .action-bar {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+        }
+
+        .btn-coeur {
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid #ddd;
+            color: #666;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .btn-coeur.liked {
+            background: #b11e1e;
+            border-color: #b11e1e;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+        }
+
+        .btn-admin-trigger {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .comptoir-chef {
+            display: none;
+            background: #1e140a;
+            color: var(--text-light);
+            border: 2px solid var(--accent);
+            margin-top: 30px;
+            padding: 18px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <h1>SA<span class="logo-dot"></span>HAFA</h1>
+        </div>
+        <p>Izay tia mahandro...</p>
+    </header>
+
+    <div class="main-container">
+        
+        <section class="comptoir">
+            <button style="background-color: #27ae60; border-color: #219653; margin-bottom: 20px;" onclick="initialiserStructureGoogleSheets()">🔧 Initialiser la Table</button>
+            
+            <h2>Partager une idée</h2>
+            <div class="form-group">
+                <label for="pseudo">Votre Prénom / Pseudo :</label>
+                <input type="text" id="pseudo" placeholder="Ex: Rova">
+            </div>
+            <div class="form-group">
+                <label for="nomPlat">Nom du plat :</label>
+                <input type="text" id="nomPlat" placeholder="Ex: Sambos revisités au canard">
+            </div>
+            <div class="form-group">
+                <label for="ingredients">Ingrédients clés :</label>
+                <input type="text" id="ingredients" placeholder="Ex: Pâte à sambos, confit de canard, gingembre">
+            </div>
+            <div class="form-group">
+                <label for="preparation">Votre secret de préparation :</label>
+                <textarea id="preparation" placeholder="Expliquez brièvement votre tour de main ou l'association..."></textarea>
+            </div>
+            <button onclick="ajouterPlat()">Déposer sur le Sahafa</button>
+        </section>
+
+        <section class="table-commune">
+            <h2>La Table des Inspirations</h2>
+            <div id="grille" class="grille-plats"></div>
+
+            <div id="comptoirChef" class="comptoir-chef">
+                <h2>🛠️ Tableau de Bord du Chef</h2>
+                <div class="form-group">
+                    <label for="selectSignature">Choisir l'emplacement à modifier :</label>
+                    <select id="selectSignature" onchange="chargerInfosDansFormulaireChef()">
+                        <option value="sig_mousse">Suggestion n°1 (Mousse au Chocolat)</option>
+                        <option value="sig_zebu">Suggestion n°2 (Filet de Zébu)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="chefNomPlat">Nouveau Nom du plat :</label>
+                    <input type="text" id="chefNomPlat">
+                </div>
+                <div class="form-group">
+                    <label for="chefIngredients">Nouveaux Ingrédients :</label>
+                    <input type="text" id="chefIngredients">
+                </div>
+                <div class="form-group">
+                    <label for="chefPreparation">Nouvelle Préparation :</label>
+                    <textarea id="chefPreparation"></textarea>
+                </div>
+                <button style="background-color: #bc1a1a; border-color: #bc1a1a;" onclick="sauvegarderMiseAJourChef()">Mettre à jour la proposition</button>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <button class="btn-admin-trigger" onclick="ouvrirEspaceChef()">🛠️ Espace Chef</button>
+    </footer>
+
+    <script>
+        const SHEETDB_API_URL = "https://sheetdb.io/api/v1/0rh3a0c2lchfa";
+        let tousLesPlats = [];
+
+        window.onload = function() {
+            recupererPlatsDepuisGoogleSheets();
+        };
+
+        function recupererPlatsDepuisGoogleSheets() {
+            const grille = document.getElementById('grille');
+            grille.innerHTML = "<div style='color:var(--accent); padding:20px;'>Mise de table en cours...</div>";
+
+            fetch(SHEETDB_API_URL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("HTTP-Error: " + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data && Array.isArray(data) && data.length > 0 && !data[0].error) {
+                        tousLesPlats = data;
+                    } else {
+                        tousLesPlats = [];
+                    }
+                    afficherTousLesPlats();
+                    chargerInfosDansFormulaireChef();
+                })
+                .catch(error => {
+                    console.error("Erreur détectée:", error);
+                    tousLesPlats = [];
+                    afficherTousLesPlats();
+                });
+        }
+
+        function afficherTousLesPlats() {
+            const grille = document.getElementById('grille');
+            grille.innerHTML = ""; 
+
+            if(tousLesPlats.length === 0) {
+                grille.innerHTML = "<div style='color:var(--accent); opacity:0.8; padding:20px; border: 1px dashed var(--accent); text-align:center;'>La table attend vos créations !<br><br>Videz votre feuille Google Sheets, puis cliquez sur le bouton vert <strong>'Initialiser la Table'</strong> en haut à gauche pour débloquer automatiquement le système.</div>";
+                return;
+            }
+
+            const signatures = tousLesPlats.filter(p => p && p.id && (p.issignature === "true" || p.issignature === true));
+            const visiteurs = tousLesPlats.filter(p => p && p.id && p.issignature !== "true" && p.issignature !== true).reverse();
+
+            signatures.forEach(plat => grille.appendChild(creerCarteHTML(plat, true)));
+            visiteurs.forEach(plat => grille.appendChild(creerCarteHTML(plat, false)));
+        }
+
+        function creerCarteHTML(plat, isSignature) {
+            const carte = document.createElement('div');
+            carte.className = `carte-plat ${isSignature ? 'signature' : ''}`;
+            
+            const likesLocaux = parseInt(localStorage.getItem('like_' + plat.id)) || 0;
+            const hasLiked = localStorage.getItem('user_has_liked_' + plat.id) === 'true';
+
+            const securePseudo = (plat.pseudo || 'Anonyme').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            const secureNomPlat = (plat.nomplat || 'Plat sans nom').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            const secureIngredients = (plat.ingredients || '-').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            const securePreparation = (plat.preparation || '-').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+            carte.innerHTML = `
+                ${isSignature ? '<span class="badge-chef">Suggestion du Chef</span>' : ''}
+                <h3>${secureNomPlat}</h3>
+                <div class="auteur">Par ${securePseudo}</div>
+                <div class="ingredients"><strong>Ingrédients :</strong> ${secureIngredients}</div>
+                <div class="preparation">${securePreparation}</div>
+                <div class="action-bar">
+                    <button class="btn-coeur ${hasLiked ? 'liked' : ''}" onclick="likerPlat('${plat.id}')">
+                        ❤️ <span>${likesLocaux}</span>
+                    </button>
+                </div>
+            `;
+            return carte;
+        }
+
+        function ajouterPlat() {
+            const pseudo = document.getElementById('pseudo').value.trim();
+            const nomPlat = document.getElementById('nomPlat').value.trim();
+            const ingredients = document.getElementById('ingredients').value.trim();
+            const preparation = document.getElementById('preparation').value.trim();
+
+            if (!pseudo || !nomPlat || !ingredients || !preparation) {
+                alert("S'il vous plaît, remplissez toutes les cases !");
+                return;
+            }
+
+            const nouveauPlat = {
+                id: "plat_" + Date.now(),
+                pseudo: pseudo,
+                nomplat: nomPlat,
+                ingredients: ingredients,
+                preparation: preparation,
+                issignature: "false"
+            };
+
+            fetch(SHEETDB_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: [nouveauPlat] })
+            })
+            .then(response => response.json())
+            .then(result => {
+                recupererPlatsDepuisGoogleSheets();
+                document.getElementById('pseudo').value = "";
+                document.getElementById('nomPlat').value = "";
+                document.getElementById('ingredients').value = "";
+                document.getElementById('preparation').value = "";
+            })
+            .catch(error => alert("Erreur d'envoi. Veuillez cliquer sur 'Initialiser la Table' d'abord."));
+        }
+
+        function initialiserStructureGoogleSheets() {
+            if(!confirm("Assurez-vous que votre feuille Google Sheets est bien vide avant de continuer. Lancer l'initialisation ?")) return;
+
+            const baseDonneesInitiale = [
+                { id: "sig_mousse", pseudo: "Chef", nomplat: "Mousse au Chocolat", ingredients: "Chocolat noir, Oeufs", preparation: "Monter les blancs en neige fermes.", issignature: "true" },
+                { id: "sig_zebu", pseudo: "Chef", nomplat: "Filet de Zébu aux Baies Roses", ingredients: "Zébu, Baies roses, Crème", preparation: "Saisir à la poêle et lier la sauce.", issignature: "true" }
+            ];
+
+            fetch(SHEETDB_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: baseDonneesInitiale })
+            })
+            .then(res => res.json())
+            .then(result => {
+                alert("Félicitations ! Vos colonnes Google Sheets ont été structurées automatiquement. La table va s'actualiser.");
+                recupererPlatsDepuisGoogleSheets();
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Erreur. Vérifiez les permissions de votre clé sur SheetDB.io (méthode POST autorisée).");
+            });
+        }
+
+        function sauvegarderMiseAJourChef() {
+            const idSelectionne = document.getElementById('selectSignature').value;
+            const nomPlatModifie = document.getElementById('chefNomPlat').value.trim();
+            const ingredientsModifies = document.getElementById('chefIngredients').value.trim();
+            const preparationModifiee = document.getElementById('chefPreparation').value.trim();
+
+            fetch(`${SHEETDB_API_URL}/id/${idSelectionne}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    data: {
+                        nomplat: nomPlatModifie,
+                        ingredients: ingredientsModifies,
+                        preparation: preparationModifiee
+                    }
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                localStorage.removeItem('user_has_liked_' + idSelectionne);
+                localStorage.setItem('like_' + idSelectionne, 0);
+                recupererPlatsDepuisGoogleSheets();
+                document.getElementById('comptoirChef').style.display = "none";
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                alert("Mis à jour avec succès !");
+            })
+            .catch(error => alert("Erreur lors de la mise à jour."));
+        }
+
+        // Le reste des fonctions (likes, espace chef) demeure intact
+        function likerPlat(id) {
+            let nbLikes = parseInt(localStorage.getItem('like_' + id)) || 0;
+            const hasLikedKey = 'user_has_liked_' + id;
+            const hasLiked = localStorage.getItem(hasLikedKey) === 'true';
+
+            if (!hasLiked) {
+                nbLikes++;
+                localStorage.setItem(hasLikedKey, 'true');
+            } else {
+                nbLikes = Math.max(0, nbLikes - 1); 
+                localStorage.removeItem(hasLikedKey);
+            }
+            localStorage.setItem('like_' + id, nbLikes);
+            afficherTousLesPlats();
+        }
+
+        function ouvrirEspaceChef() {
+            const password = prompt("Entrez le code secret du Chef Sahafa :");
+            if (password === "Hasina2021") {
+                document.getElementById('comptoirChef').style.display = "block";
+                document.getElementById('comptoirChef').scrollIntoView({ behavior: 'smooth' });
+                chargerInfosDansFormulaireChef();
+            } else if (password !== null) {
+                alert("Code erroné.");
+            }
+        }
+
+        function chargerInfosDansFormulaireChef() {
+            const idSelectionne = document.getElementById('selectSignature').value;
+            if(!tousLesPlats || tousLesPlats.length === 0) return;
+            const plat = tousLesPlats.find(p => p && p.id === idSelectionne);
+            
+            if(plat) {
+                document.getElementById('chefNomPlat').value = plat.nomplat || "";
+                document.getElementById('chefIngredients').value = plat.ingredients || "";
+                document.getElementById('chefPreparation').value = plat.preparation || "";
+            }
+        }
+    </script>
+</body>
+</html>
